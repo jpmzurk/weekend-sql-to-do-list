@@ -15,53 +15,56 @@
 <body>
   <header>
     <!-- <img src="" class="icon" /> -->
-    <h3></h3>
-    <h4>All the time in the world</h4>
-  </header>
-  <section id="addTask">
-    <h3>Add task</h3>
-    <form class="form-inline">
-      <input class="form-control" type="text" id="nameOfTask" placeholder="Name of Task">
-      <!-- <input class="form-control"type="text" id="when" placeholder="When"> -->
-      <button type="button" id="disabledBtn" class="btn btn-outline-secondary" disabled> When to complete</button>
-      <div id="dropDown" class="form-group">
-        <select class="form-control" id="whenComplete">
-          <option>Today</option>
-          <option>Tomorrow</option>
-          <option>This Weekend</option>
-          <option>This Week</option>
-          <option>Next Week</option>
-          <option>This Month</option>
-          <option>Next Month</option>
-          <option>This Year</option>
-        </select>
-      </div>
-      <input class="form-control" type="text" id="location" placeholder="Where">
-      <input class="form-control" type="text" id="notesIn" placeholder="Addition Notes">
-      <!-- <input class="form-control" type="text" id="addImage" placeholder="Add Image"> -->
-      <button class="btn btn-outline-secondary" type="button" id="addButton">Add Task</button>
-    </form>
-  </section>
-  <section>
-    <h2>Your Tasks</h2>
-    <div class="table-responsive table-hover">
-      <table class="table">
-        <!--table-striped-->
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>When</th>
-            <th>Where</th>
-            <th>Notes</th>
-            <th>Complete?</th>
 
-          </tr>
-        </thead>
-        <tbody id="postedTasks">
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <h2>All The Time In The World</h2>
+  </header>
+  <div id="wrapper-main">
+    
+      <section id="addTask">
+        <h3>Add Task</h3>
+        <form class="form-inline">
+          <input type="text" id="nameOfTask" class="form-control input-group-btn" placeholder="Name of Task">
+          <!-- <input class="form-control"type="text" id="when" placeholder="When"> -->
+          <button type="button" id="disabledBtn" class="btn btn-outline-secondary input-group-btn"> When to complete</button>
+          <div id="dropDown" class="form-group">
+            <select class="form-control input-group-btn" id="whenComplete">
+              <option>Today</option>
+              <option>Tomorrow</option>
+              <option>This Weekend</option>
+              <option>This Week</option>
+              <option>Next Week</option>
+              <option>This Month</option>
+              <option>Next Month</option>
+              <option>This Year</option>
+            </select>
+          </div>
+          <input type="text" id="location" class="form-control input-group-btn"  placeholder="Where">
+          <input type="text" id="notesIn" class="form-control input-group-btn" placeholder="Addition Notes">
+          <!-- <input class="form-control" type="text" id="addImage" placeholder="Add Image"> -->
+          <button  type="button" id="addButton" class="btn btn-outline-secondary input-group-btn">Add Task</button>
+        </form>
+      </section>
+      <section>
+        <h2>Your Tasks</h2>
+        <div class="table-responsive table-hover">
+          <table class="table">
+            <!--table-striped-->
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>When</th>
+                <th>Where</th>
+                <th>Notes</th>
+                <th>Complete?</th>
+
+              </tr>
+            </thead>
+            <tbody id="postedTasks">
+            </tbody>
+          </table>
+        </div>
+      </section>
+  </div>
 </body>
 
 </html>

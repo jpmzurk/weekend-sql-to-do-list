@@ -1,13 +1,20 @@
 body {
-    margin: 2em;
+    padding:0;
+    margin:0;    
+}
+
+
+.full_width {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    border-spacing:0;
 }
 
 .form-control {
     width: 13%;
     margin: .5em;
-}
-
-
+} 
 
 #whenComplete {
     margin-left: 0em;
@@ -20,7 +27,13 @@ body {
 }
 
 header {
-    margin-bottom: 3em;
+    /* padding:0;
+    margin:0; */
+    padding-top: 5em;
+    padding-bottom: 5em;
+    
+    background-color:rgb(165, 113, 100);
+    text-indent: 4em;
 }
 
 #addTask {
@@ -30,4 +43,38 @@ header {
 .table-hover > tbody > tr.green:hover > td,
 .green > td {
     background-color: rgb(221, 252, 217);
+}
+
+#disabledBtn {
+    margin-left: .5em;
+    border-right: 0px;
+    border-color: rgb(177, 177, 177);
+}
+
+.table-responsive {
+    width: 90%;
+}
+
+
+#wrapper-main {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    background-color:rgb(165, 113, 100, .1);
+    padding: 3em;
+}
+
+#nameOfTask {
+    margin-left: 0em;
+}
+
+#addTask { 
+    padding-top: 2em;
+}
+
+#disabledBtn {
+    background-color  : white !important;
+}
+#addButton {
+    background-color  : white !important;
 }
