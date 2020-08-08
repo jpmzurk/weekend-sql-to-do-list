@@ -7,13 +7,11 @@ body {
     margin: .5em;
 }
 
-/* .readyTransferBtn {
-    margin-left: 2em;
-}
 
-#readyForTransferIn {
+
+#whenComplete {
     margin-left: 0em;
-}  */
+}  
 
 #when {
     color: initial;
