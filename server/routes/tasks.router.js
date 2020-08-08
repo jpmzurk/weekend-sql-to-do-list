@@ -74,7 +74,7 @@ tasksRouter.put('/reSubmit', (req, res) => {
       res.sendStatus(500);
     });
   
-  });
+});
   
 
 
@@ -87,7 +87,7 @@ tasksRouter.delete('/:id', (req, res)=> {
                     WHERE id = $1;
                     `;
 
-    pool.query(queryText, [id]).then(result => {
+    pool.query(queryText, [req.params.id]).then(result => {
         console.log(result);
         res.sendStatus(201);
     }).catch(error => {

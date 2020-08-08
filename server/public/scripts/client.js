@@ -13,7 +13,7 @@ $(document).ready(function () {
 function clickListeners() {
     $('#addButton').on('click', postTask);
     $('#postedTasks').on('click', '.edit', editTasks);
-    $('#postedTasks').on('click', '.delete', deleteTasks);
+    $('#postedTasks').on('click', '.deleteBtn', deleteTasks);
     $('#postedTasks').on('click', '.cancelEdit', cancelEdit);
 }
 
