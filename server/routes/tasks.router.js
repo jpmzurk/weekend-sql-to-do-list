@@ -1,21 +1,22 @@
-const express = require('express')
-const router = express.Router();
+const express = require('express');
+const { Router } = require('express');
+const tasksRouter = express.Router();
+
 
 const pool = require('../module/pool.js');
 
-router.get('/', (req, res) => {
-    let queryText = 'SELECT * FROM tasks ORDER BY id'
+tasksRouter.get('/', (req, res) => {
+    let queryText = 'SELECT * FROM tasks ORDER BY id;';
 
-    pool.query(queryText).then(result => {
+    pool.query(queryText).then((result) => {
         res.send(result.rows);
-    })
-        .catch(error => {
-            console.log('error getting books', error);
+    }).catch(error => {
+            console.log('error getting tasks', error);
             res.sendStatus(500);
           });
-});
+})
 
-router.post('/', (req, res) => {
+tasksRouter.post('/', (req, res) => {
     let task = req.body;
     console.log('posting', task);
 
@@ -30,7 +31,7 @@ router.post('/', (req, res) => {
         })
 })
 
-router.put ('/', (req,res)=>{
+tasksRouter.put ('/', (req,res)=>{
     let task = req.body;
 
     console.log('editing with put', task);
@@ -54,7 +55,7 @@ router.put ('/', (req,res)=>{
 })
 
 
-router.delete('/:id', (req, res)=> {
+tasksRouter.delete('/:id', (req, res)=> {
     let id = req.params.id;
     console.log('server is deleting task', id);
     
@@ -72,4 +73,4 @@ router.delete('/:id', (req, res)=> {
     })
 })
 
-module.exports = router;
+module.exports = tasksRouter;
