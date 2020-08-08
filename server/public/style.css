@@ -1,0 +1,31 @@
+body {
+    margin: 2em;
+}
+
+.form-control {
+    width: 13%;
+    margin: .5em;
+}
+
+/* .readyTransferBtn {
+    margin-left: 2em;
+}
+
+#readyForTransferIn {
+    margin-left: 0em;
+}  */
+
+#when {
+    color: initial;
+    border-right: 0px;
+    border-color: rgb(177, 177, 177);;
+}
+
+header {
+    margin-bottom: 3em;
+}
+
+#addTask {
+    margin-bottom: 2em;
+}
+

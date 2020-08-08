@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Time to do</title>
+    <script src="vendors/jquery-3.3.1.min.js" charset="utf-8"></script> 
+     <script src="vendors/popper.js"></script>
+     <script src="vendors/bootstrap.min.js"></script>
+    <script src="scripts/client.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="vendors/bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+  <header>
+    <!-- <img src="" class="icon" /> -->
+    <h3></h3>
+    <h4>All the time in the world</h4>
+  </header>
+  <section id="addTask">
+    <h3>Add task</h3>
+    <form class="form-inline">
+    <input class="form-control"type="text" id="nameOfTask" placeholder="Name">
+    <input class="form-control"type="text" id="description" placeholder="Short description">
+    <input class="form-control"type="text" id="when" placeholder="when">
+    <button type="button" id="disabledBtn" class="btn btn-outline-secondary" disabled > When to complete</button> -->
+    <div class="form-group">
+      <select class="form-control" id="whenComplete">
+        <option>Today</option>
+        <option>Tomorrow</option>
+        <option>This Weekend</option>
+        <option>This Week</option>
+        <option>Next Week</option>
+        <option>This Month</option>
+        <option>Next Month</option>
+        <option>This Year</option>
+      </select>
+    </div>
+    <input class="form-control"type="text" id="location" placeholder="Where">
+    <input class="form-control" type="text" id="notesIn" placeholder="Addition Notes">
+    <!-- <input class="form-control" type="text" id="addImage" placeholder="Add Image"> -->
+    <button class="btn btn-outline-secondary" type="button" id="addButton">Add Task</button>
+    </form>
+  </section>
+  <section>
+  <h2>Your Tasks</h2>
+      <div class="table-responsive">
+        <table class="table">    <!--table-striped-->
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>When</th>
+              <th>Where</th>
+              <th>Notes</th>
+              <!-- <th>Picture</th> -->
+            </tr>
+          </thead>
+          <tbody id="postedTasks">
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+  </html>

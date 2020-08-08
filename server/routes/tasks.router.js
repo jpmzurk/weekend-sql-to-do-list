@@ -1,0 +1,75 @@
+const express = require('express')
+const router = express.Router();
+
+const pool = require('../module/pool.js');
+
+router.get('/', (req, res) => {
+    let queryText = 'SELECT * FROM tasks ORDER BY id'
+
+    pool.query(queryText).then(result => {
+        res.send(result.rows);
+    })
+        .catch(error => {
+            console.log('error getting books', error);
+            res.sendStatus(500);
+          });
+});
+
+router.post('/', (req, res) => {
+    let task = req.body;
+    console.log('posting', task);
+
+    let queryText = `INSERT INTO tasks (name, when, location, notes)
+                    VALUES ($1, $2, $3, $4)` ;
+    pool.query(queryText, [task.name, task.when, task.location, task.notes])
+        .then (result => {
+             res.sendStatus(201)
+        }).catch(error => {
+            console.log('Error adding Task', error);
+            res.sendStatus(500);
+        })
+})
+
+router.put ('/', (req,res)=>{
+    let task = req.body;
+
+    console.log('editing with put', task);
+
+    let queryText = `
+                    UPDATE tasks
+                    SET name = $1,
+                        when = $2,
+                        location = $3,
+                        notes = $4,
+                    WHERE id = $5;
+                    `;
+    pool.query(queryText, [task.name, task.when, task.location, task.notes, Number(task.id)]) 
+        .then(result => {
+            console.log(result);
+            res.sendStatus(201);
+        }).catch(error => {
+            console.log('Error editing Task', error);
+            res.sendStatus(500);
+        })
+})
+
+
+router.delete('/:id', (req, res)=> {
+    let id = req.params.id;
+    console.log('server is deleting task', id);
+    
+    let queryText = `
+                    DELETE FROM tasks
+                    WHERE id = $1;
+                    `;
+
+    pool.query(queryText, [id]).then(result => {
+        console.log(result);
+        res.sendStatus(201);
+    }).catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    })
+})
+
+module.exports = router;
