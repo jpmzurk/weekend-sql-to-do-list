@@ -27,3 +27,7 @@ header {
     margin-bottom: 2em;
 }
 
+.table-hover > tbody > tr.green:hover > td,
+.green > td {
+    background-color: rgb(221, 252, 217);
+}

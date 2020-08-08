@@ -1,27 +1,33 @@
 console.log('js');
 
-console.log('js');
-
 $(document).ready(function () {
-  console.log('JQ');
-  clickListeners();
-//   keyListeners();
-  getTasks();
-}); 
+    console.log('JQ');
+    clickListeners();
+
+    getTasks();
+});
 
 
 function clickListeners() {
     $('#addButton').on('click', postTask);
     $('#postedTasks').on('click', '.edit', editTasks);
     $('#postedTasks').on('click', '.deleteBtn', deleteTasks);
-    $('#postedTasks').on('click', '.cancelEdit', cancelEdit);
+    $('#postedTasks').on('click', '.success', completeTask);
+    $('#postedTasks').on('click', '.notSuccess', incompleteTask)
+    // $('#postedTasks').on('click', '.cancelEdit', cancelEdit);
 }
 
-// function keyListeners() {
- 
-    
-// }
+function completeTask(){
+    if ($(this).is(':checked') === true ) {
+        $(this).parents('tr').addClass('green');
+    }
+}
 
+function incompleteTask(){
+    if ($(this).is(':checked') === true ) {
+        $(this).parents('tr').removeClass('green');
+    }
+}
 
 function getTasks() {
     console.log('in get Tasks');
@@ -29,13 +35,12 @@ function getTasks() {
     $.ajax({
         method: 'GET',
         url: '/tasks'
-    }).then(function(response){
+    }).then(function (response) {
         console.log('current tasks', response);
         appendTasks(response);
-    }).catch(function (error){
+    }).catch(function (error) {
         console.log(error, 'error in getTasks');
     });
-    
 }
 
 function appendTasks(tasks) {
@@ -43,11 +48,11 @@ function appendTasks(tasks) {
     $('#postedTasks').empty();
 
     let radioButtons =
-        (`<div class="btn-group btn-group-toggle" data-toggle="buttons">
+        (`<div class="btn-group btn-group-toggle radio" data-toggle="buttons">
         <label class="btn btn-secondary active">
-        <input type="radio" name="options" id="option1" autocomplete="off" checked> Incomplete </label>
+        <input type="radio" class="notSuccess" autocomplete="off" checked> Incomplete </label>
         <label class="btn btn-secondary">
-        <input type="radio" name="options" id="option2" autocomplete="off"> Complete </label> </div>`);
+        <input type="radio" class="success" autocomplete="off"> Complete </label> </div>`);
 
     for (let i = 0; i < tasks.length; i++) {
         let task = tasks[i];
@@ -59,10 +64,10 @@ function appendTasks(tasks) {
         tr.append(`<td>${task.notes}</td>`)
         tr.append(`<td>${radioButtons}</td>`)
         tr.append(`<td><button class="deleteBtn btn btn-outline-secondary">Delete</button></td>`);
-        tr.append(`<td><button class="edit btn btn-outline-secondary">Edit</button></td>`); 
+        tr.append(`<td><button class="edit btn btn-outline-secondary">Edit</button></td>`);
         $('#postedTasks').append(tr);
     }
-    
+
 }
 
 function postTask() {
@@ -74,8 +79,8 @@ function postTask() {
         notes: $('#notesIn').val()
     }
     console.log(taskToSend);
-    
-    if (taskToSend.name === '' || taskToSend.when === ''){
+
+    if (taskToSend.name === '' || taskToSend.when === '') {
         alert('please enter a name and when')
     } else {
         $.ajax({
@@ -87,9 +92,9 @@ function postTask() {
             console.log('server response', response);
             getTasks();
             $('#nameOfTask').val(''),
-            $('#whenComplete').val(''),
-            $('#location').val(''),
-            $('#notesIn').val('')
+                $('#whenComplete').val(''),
+                $('#location').val(''),
+                $('#notesIn').val('')
 
         }).catch(function (error) {
             console.log('error');
@@ -99,71 +104,65 @@ function postTask() {
     }
 }
 
-function editTasks () {
+function editTasks() {
     console.log('in editTasks');
     let $currentRow = $(this).closest('tr');
     let $thisTd = $(this).closest('tr').children('td');
     let enableEditable = ($currentRow).prop('contenteditable', true);
 
-    if ($(this).text() == 'Done' ){
+    //pull in edited text
+    let task = {};
+    task.id = $(this).closest('tr').data('task').id;
+    task.name = $thisTd.eq(0).text();
+    task.when = $thisTd.eq(1).text();
+    task.location = $thisTd.eq(2).text();
+    task.notes = $thisTd.eq(3).text();
+    // task.status = $thisTd.eq(4).text();
+
+    if ($(this).text() == 'Done') {
         $(this).closest('tr').prop('contenteditable', false);
-        //change name of button
         $(this).html('Edit');
-        //pull in edited text
-        let task = {};
-        task.id = $(this).closest('tr').data('task').id;
-        task.name = $thisTd.eq(0).text();
-        task.when = $thisTd.eq(1).text();
-        task.location = $thisTd.eq(2).text();
-        task.notes = $thisTd.eq(3).text();
-        // task.status = $thisTd.eq(4).text();
-  
-        //update data-bear object
+
+        //update data-task object
         $currentRow.data('task', task);
-        //remove cancel button
-        // $(cancelButtonLocation).remove();
-       
         postEditedTasks(task);
-       
-    } else if ($(this).text() == 'Edit' ) {
+
+    } else if ($(this).text() == 'Edit') {
         $(enableEditable);
-        //change name of button
         $(this).html('Done')
-     
     }
 }
 
 function postEditedTasks(task) {
+
     $.ajax({
         method: 'PUT',
-        url: `/tasks/reSubmit`,
+        url: `/tasks/edited`,
         data: task
-    
-      }).then(function (response) {
+    }).then(function (response) {
         console.log('in postEditedTasks', response);
         getTasks();
-    
-      }).catch(function (error) {
+    }).catch(function (error) {
         console.log('this is the error', error);
-      })
+    })
 }
 
-function deleteTasks (){
+function deleteTasks() {
     console.log('in deleteTasks');
     let clickedId = $(this).closest('tr').data('task').id;
     console.log(clickedId);
     $.ajax({
         method: 'DELETE',
         url: `/tasks/${clickedId}`
-    }).then(function (response){
+    }).then(function (response) {
         console.log('deleteTasks');
         getTasks();
-    }).catch(function (error){
+    }).catch(function (error) {
         console.log('error attempting to delete', error);
     })
 }
 
-function cancelEdit () {
+function cancelEdit() {
     console.log('in cancelEdit');
-    
+
 }
