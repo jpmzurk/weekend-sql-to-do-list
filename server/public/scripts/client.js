@@ -11,22 +11,46 @@ function clickListeners() {
     $('#addButton').on('click', postTask);
     $('#postedTasks').on('click', '.edit', editTasks);
     $('#postedTasks').on('click', '.deleteBtn', deleteTasks);
-    $('#postedTasks').on('click', '.success', completeTask);
-    $('#postedTasks').on('click', '.notSuccess', incompleteTask)
+    $('#postedTasks').on('click', '.success', taskStatus);
+    $('#postedTasks').on('click', '.notSuccess', taskStatus)
     $('#postedTasks').on('click', '.cancel', cancelEdit);
-    $('#postedTasks').on('click', '.move', movingTasks);
+
+    $('#completed').on('click', '.edit', editTasks);
+    $('#completed').on('click', '.deleteBtn', deleteTasks);
+    $('#completed').on('click', '.success', taskStatus);
+    $('#completed').on('click', '.notSuccess', taskStatus)
+    $('#completed').on('click', '.cancel', cancelEdit);
+
 }
 
-function keypressListeners(){
-
+function keypressListeners() {
     $('#addTask').keyup(function (e) {
-        if (e.which === 13){
+        if (e.which === 13) {
             postTask();
-        } else if (e.which ===27){
-            cancelEdit();
-        }
+        } 
     })
 }
+
+let radioBtnsIncomplete =
+    `<div class="btn-group btn-group-toggle radio addTarget" data-toggle="buttons">
+            <label class="btn btn-secondary active">
+            <input type="radio" class="notSuccess" value="Incomplete" checked> Incomplete </label>
+            <label class="btn btn-secondary ">
+            <input type="radio" class="success" value="Complete" > Complete </label> 
+        </div>`;
+
+let radioBtnsComplete =
+    `<div class="btn-group btn-group-toggle radio addTarget" data-toggle="buttons">
+            <label class="btn btn-secondary">
+            <input type="radio" class="notSuccess" value="Incomplete" > Incomplete </label>
+            <label class="btn btn-secondary active">
+            <input type="radio" class="success" value="Complete" checked  > Complete </label> 
+           
+        </div>`;
+
+let deleteBtn = `<button class="deleteBtn btn btn-outline-secondary">Delete</button>`;
+let editBtn = `<button class="edit btn btn-outline-secondary">Edit</button>`;
+
 
 function getTasks() {
     $.ajax({
@@ -40,31 +64,58 @@ function getTasks() {
     });
 }
 
+
 function appendTasks(tasks) {
-   
     $('#postedTasks').empty();
-
-    let radioButtons =
-        (`<div class="btn-group btn-group-toggle radio addTarget" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-        <input type="radio" class="notSuccess" autocomplete="off" checked> Incomplete </label>
-        <label class="btn btn-secondary ">
-        <input type="radio" class="success" autocomplete="off"> Complete </label> </div>`);
-        
-
+    $('#completeTasks').empty();
     for (let i = 0; i < tasks.length; i++) {
         let task = tasks[i];
-        let tr = $('<tr></tr>');
-        tr.data('task', task);
-        tr.append(`<td>${task.name}</td>`)
-        tr.append(`<td>${task.when}</td>`)
-        tr.append(`<td>${task.location}</td>`)
-        tr.append(`<td>${task.notes}</td>`)
-        tr.append(`<td>${radioButtons}</td>`)
-        tr.append(`<td><button class="deleteBtn btn btn-outline-secondary">Delete</button></td>`);
-        tr.append(`<td><button class="edit btn btn-outline-secondary">Edit</button></td>`);
-        $('#postedTasks').append(tr);
+        
+        //deal with complete/incomplete and tableOne/tableTwo
+        if ((task.status == 'Complete') && (task.tableLocation == 'TableOne')){
+            let tr = $('<tr class ="green"></tr>');
+            tr.data('task', task);
+            tr.append(`<td>${task.name}</td>`);
+            tr.append(`<td>${task.when}</td>`);
+            tr.append(`<td>${task.location}</td>`);
+            tr.append(`<td>${task.notes}</td>`);
+            tr.append(`<td>${radioBtnsComplete}</td>`);
+            tr.append(`<td>${deleteBtn}</td>`);
+            tr.append(`<td>${editBtn}</td>`);
+            $('#postedTasks').append(tr);
+        } 
+            else if ((task.status == 'Complete') && (task.tableLocation == 'tableTwo')) {
+                console.log('in tableLocation');
+                
+            let tr = $('<tr class ="green"></tr>');
+            tr.data('task', task);
+            tr.append(`<td>${task.name}</td>`);
+            tr.append(`<td>${task.when}</td>`);
+            tr.append(`<td>${task.location}</td>`);
+            tr.append(`<td>${task.notes}</td>`);
+            tr.append(`<td>${radioBtnsComplete}</td>`);
+            tr.append(`<td>${deleteBtn}</td>`);
+            tr.append(`<td>${editBtn}</td>`);
+            $('#completeTasks').append(tr);
+        } 
+            else if (task.status == 'Incomplete') {
+            let tr = $('<tr class></tr>');
+            tr.data('task', task);
+            tr.append(`<td>${task.name}</td>`);
+            tr.append(`<td>${task.when}</td>`);
+            tr.append(`<td>${task.location}</td>`);
+            tr.append(`<td>${task.notes}</td>`);
+            tr.append(`<td>${radioBtnsIncomplete}</td>`);
+            tr.append(`<td>${deleteBtn}</td>`);
+            tr.append(`<td>${editBtn}</td>`);
+            $('#postedTasks').append(tr);
+        }
     }
+}
+
+
+function statusComplete (){
+    
 }
 
 function postTask() {
@@ -120,7 +171,7 @@ function editTasks() {
     let enableEditable = ($currentRow).prop('contenteditable', true);
     let cancelButton = '<td> <button class="cancel btn btn-outline-secondary"> Cancel </button> </td>';
     let cancelButtonLocation = ($currentRow).find('.cancel').remove();
-    
+
     //get edited task data
     let task = {};
     task.id = $(this).closest('tr').data('task').id;
@@ -131,16 +182,16 @@ function editTasks() {
 
     //if user is done editing
     if ($(this).text() == 'Done') {
-        $(this).closest('tr').prop('contenteditable', false);  
+        $(this).closest('tr').prop('contenteditable', false);
         $(this).html('Edit');
         $(cancelButtonLocation).remove();
 
         //update data-task object
         $currentRow.data('task', task);
         postEditedTasks(task);
-    
+
     } // if user is beginning to edit
-        else if ($(this).text() == 'Edit') {
+    else if ($(this).text() == 'Edit') {
         $(enableEditable);
         $currentRow.append(cancelButton)
         $(this).html('Done')
@@ -163,9 +214,9 @@ function postEditedTasks(task) {
 function cancelEdit() {
     console.log('in cancelEdit');
 
-     //disable editing ability
+    //disable editing ability
     $(this).closest('tr').prop('contenteditable', false);
-     
+
     //these tds in the row
     let currentTdsInRow = $(this).closest('tr').children('td');
 
@@ -175,7 +226,7 @@ function cancelEdit() {
 
     //get pre-edit task data 
     let preEditTask = $(this).closest('tr').data('task');
-    
+
     //empty necessary tds
     currentTdsInRow.eq(0).empty();
     currentTdsInRow.eq(1).empty();
@@ -183,77 +234,60 @@ function cancelEdit() {
     currentTdsInRow.eq(3).empty();
     currentTdsInRow.eq(6).empty();
     $(cancelButtonLocation).remove();
-    
-     //set those same tds with pre-edit data
+
+    //set those same tds with pre-edit data
     currentTdsInRow.eq(0).append(preEditTask.name)
     currentTdsInRow.eq(1).append(preEditTask.when)
     currentTdsInRow.eq(2).append(preEditTask.location)
     currentTdsInRow.eq(3).append(preEditTask.notes)
     currentTdsInRow.eq(6).append(editBtb);
-
-    
-     
 }
 
-function completeTask(){
-    let moveTaskBtn = `<label class="btn btn-secondary move">
-    <input type="radio" class="notSuccess" autocomplete="off"> Move Task </label>`;
 
-    if ($(this).is(':checked') === true ) {
-        $(this).parents('tr').addClass('green');
-        $(this).closest('tr').find('.addTarget').append(moveTaskBtn)
-    } 
+function taskStatus() {
+    let radioValue = $(this).val();
+    let task = $(this).closest('tr').data('task');
+    let updatedTask = task;
+    updatedTask.status = radioValue;
 
-
+    putTaskStatus(updatedTask);
 }
 
-function incompleteTask(){
-    
-    if ($(this).is(':checked') === true ) {
-        $(this).parents('tr').removeClass('green');
-        $(this).closest('tr').find('.move').remove();
-    }
+
+
+function putTaskStatus(updatedTask) {
+    $.ajax({
+        method: 'PUT',
+        url: `/tasks/status`,
+        data: updatedTask
+    }).then(function (response) {
+        console.log('in updatedTask', response);
+        getTasks();
+    }).catch(function (error) {
+        console.log('this is the error', error);
+    })
 }
 
-function movingTasks (){
+
+function movingTasks() {
     console.log('in move task');
 
-    let currentRowData = $(this).closest('tr').data('task')
-
-    $(this).closest('tr').remove();
-    $('#completed').empty();
-    
-    let successTable = 
-    `<h2 class="tableTwoHeader">Completed Tasks</h2>
-    <div class="table-responsive table-hover table-complete">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>When</th>
-            <th>Where</th>
-            <th>Notes</th>
-            <th>Time Complete</th>
-          </tr>
-        </thead>
-        <tbody class="completeTasks">
-        </tbody>
-      </table>
-    </div>`
-    
-    $('#completed').append(successTable);
-
+    let currentRowData = $(this).closest('tr').data('task');
+    console.log(currentRowData);
+    let taskData = currentRowData;
+    taskData.tableLocation = 'tableTwo';
 }
 
-// function postCompleteTasks(task) {
-//     $.ajax({
-//         method: 'PUT',
-//         url: `/tasks/completeTable`,
-//         data: task
-//     }).then(function (response) {
-//         console.log('in postEditedTasks', response);
-//         getTasks();
-//     }).catch(function (error) {
-//         console.log('this is the error', error);
-//     })
-// }
+function moveTable(task) {
+    $.ajax({
+        method: 'PUT',
+        url: `/tasks/table`,
+        data: task
+    }).then(function (response) {
+        console.log('in updatedTask', response);
+        getTasks();
+    }).catch(function (error) {
+        console.log('this is the error', error);
+    })
+
+}

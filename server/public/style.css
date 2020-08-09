@@ -61,7 +61,7 @@ header {
     padding-bottom: 0em;
 }
 
-#tableBody { 
+.tableBody { 
     padding: 3em;
     padding-top: 0em;
 }
@@ -69,14 +69,15 @@ header {
 #disabledBtn {
     background-color  : white !important;
 }
+
 #addButton {
     background-color  : white !important;
 }
-.table-complete {
+/* .table-complete {
     display: flex;
     flex-flow: column;
     height: 90%;
-}
+} */
 
 
 .tableTwoHeader{

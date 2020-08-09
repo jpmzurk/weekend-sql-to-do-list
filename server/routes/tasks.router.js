@@ -9,6 +9,7 @@ tasksRouter.get('/', (req, res) => {
     let queryText = 'SELECT * FROM tasks ORDER BY id;';
 
     pool.query(queryText).then((result) => {
+        console.log(result.rows);
         res.send(result.rows);
     }).catch(error => {
         console.log('error getting tasks', error);
@@ -20,7 +21,7 @@ tasksRouter.post('/', (req, res) => {
     let task = req.body;
     console.log('posting', task);
 
-    let queryText = `INSERT INTO "tasks" ("name", "when", "location", "notes", "status", "tableLocation")
+    let queryText = `INSERT INTO "tasks" ("name", "when", "location", "notes")
                     VALUES ($1, $2, $3, $4);`
     pool.query(queryText, [task.name, task.when, task.location, task.notes])
         .then(result => {
@@ -49,7 +50,7 @@ tasksRouter.put('/edited', (req, res) => {
             console.log(result);
             res.sendStatus(201);
         }).catch(error => {
-            console.log('error in post', error);
+            console.log('error in put', error);
             res.sendStatus(500);
         });
 });
@@ -75,28 +76,46 @@ tasksRouter.delete('/:id', (req, res) => {
 })
 
 
-// tasksRouter.put('/completeTable', (req, res) => {
-//     let task = req.body;
-//     let task = {
-//         status : 'Completed'
-//     }
+tasksRouter.put('/status', (req, res) => {
+    let task = req.body;
 
-//     console.log('in edited task', task);
-//     let queryText = `
-//                     UPDATE tasks
-//                     SET status = $1
-//                     WHERE id = $2;
-//                     `
+    console.log('in status', task);
 
-//     pool.query(queryText, [task.status, Number(task.id)])
-//         .then(result => {
-//             console.log(result);
-//             res.sendStatus(201);
-//         }).catch(error => {
-//             console.log('error in post', error);
-//             res.sendStatus(500);
-//         });
+    let queryText = `
+                    UPDATE tasks
+                    SET  status = $1
+                    WHERE id = $2;
+                    `
+    pool.query(queryText, [task.status, task.id])
+        .then(result => {
+            console.log(result);
+            res.sendStatus(201);
+        }).catch(error => {
+            console.log('error in put', error);
+            res.sendStatus(500);
+        });
 
-// });
+});
+
+tasksRouter.put('/table/', (req, res) => {
+    let task = req.body;
+
+    console.log('in table', task);
+
+    let queryText = `
+                    UPDATE tasks
+                    SET  "tableLocation" = $1
+                    WHERE id = $2;
+                    `
+    pool.query(queryText, [task.tableLocation, task.id])
+        .then(result => {
+            console.log(result);
+            res.sendStatus(201);
+        }).catch(error => {
+            console.log('error in put', error);
+            res.sendStatus(500);
+        });
+
+});
 
 module.exports = tasksRouter;
