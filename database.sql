@@ -3,7 +3,9 @@ CREATE TABLE tasks(
 	"name" VARCHAR (250) NOT NULL,
 	"when" VARCHAR (100) NOT NULL,
 	"location" VARCHAR (100) DEFAULT '', 
-	"notes" VARCHAR (250) DEFAULT ''
+	"notes" VARCHAR (250) DEFAULT '',
+	"status" VARCHAR (25) DEFAULT 'Incomplete',
+	"tableLocation" VARCHAR (25) DEFAULT 'TableOne'
 );
 
 INSERT INTO "tasks" ("name", "when", "location", "notes") VALUES ('Take out garbage', 'today', 'home', 'reminder to get more garbage bags soon');

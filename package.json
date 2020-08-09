@@ -21,6 +21,9 @@
   "dependencies": {
     "@popperjs/core": "^2.4.4",
     "express": "^4.17.1",
-    "pg": "^8.3.0"
+    "js": "^0.1.0",
+    "node": "^14.7.0",
+    "pg": "^8.3.0",
+    "require.js": "^1.0.0"
   }
 }

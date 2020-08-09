@@ -14,7 +14,7 @@ function clickListeners() {
     $('#postedTasks').on('click', '.success', completeTask);
     $('#postedTasks').on('click', '.notSuccess', incompleteTask)
     $('#postedTasks').on('click', '.cancel', cancelEdit);
-
+    $('#postedTasks').on('click', '.move', movingTasks);
 }
 
 function keypressListeners(){
@@ -25,13 +25,10 @@ function keypressListeners(){
         } else if (e.which ===27){
             cancelEdit();
         }
-
     })
 }
 
 function getTasks() {
-    console.log('in get Tasks');
-
     $.ajax({
         method: 'GET',
         url: '/tasks'
@@ -44,15 +41,16 @@ function getTasks() {
 }
 
 function appendTasks(tasks) {
-    console.log('in append Tasks');
+   
     $('#postedTasks').empty();
 
     let radioButtons =
-        (`<div class="btn-group btn-group-toggle radio" data-toggle="buttons">
+        (`<div class="btn-group btn-group-toggle radio addTarget" data-toggle="buttons">
         <label class="btn btn-secondary active">
         <input type="radio" class="notSuccess" autocomplete="off" checked> Incomplete </label>
-        <label class="btn btn-secondary">
+        <label class="btn btn-secondary ">
         <input type="radio" class="success" autocomplete="off"> Complete </label> </div>`);
+        
 
     for (let i = 0; i < tasks.length; i++) {
         let task = tasks[i];
@@ -99,12 +97,10 @@ function postTask() {
             console.log('error');
             alert('there is a problem with server')
         })
-
     }
 }
 
 function deleteTasks() {
-    console.log('in deleteTasks');
     let clickedId = $(this).closest('tr').data('task').id;
     console.log(clickedId);
     $.ajax({
@@ -119,25 +115,23 @@ function deleteTasks() {
 }
 
 function editTasks() {
-    console.log('in editTasks');
     let $currentRow = $(this).closest('tr');
-    let $thisTd = $(this).closest('tr').children('td');
+    let $theseTds = $(this).closest('tr').children('td');
     let enableEditable = ($currentRow).prop('contenteditable', true);
     let cancelButton = '<td> <button class="cancel btn btn-outline-secondary"> Cancel </button> </td>';
-    let cancelButtonLocation = ($currentRow).children('td').eq(7);
+    let cancelButtonLocation = ($currentRow).find('.cancel').remove();
     
     //get edited task data
     let task = {};
     task.id = $(this).closest('tr').data('task').id;
-    task.name = $thisTd.eq(0).text();
-    task.when = $thisTd.eq(1).text();
-    task.location = $thisTd.eq(2).text();
-    task.notes = $thisTd.eq(3).text();
-    // task.status = $thisTd.eq(4).text();
+    task.name = $theseTds.eq(0).text();
+    task.when = $theseTds.eq(1).text();
+    task.location = $theseTds.eq(2).text();
+    task.notes = $theseTds.eq(3).text();
 
     //if user is done editing
     if ($(this).text() == 'Done') {
-        $(this).closest('tr').prop('contenteditable', false);  //no idea why, but this line didn't work as a variable
+        $(this).closest('tr').prop('contenteditable', false);  
         $(this).html('Edit');
         $(cancelButtonLocation).remove();
 
@@ -166,11 +160,13 @@ function postEditedTasks(task) {
     })
 }
 
-
 function cancelEdit() {
     console.log('in cancelEdit');
 
-    //this tr
+     //disable editing ability
+    $(this).closest('tr').prop('contenteditable', false);
+     
+    //these tds in the row
     let currentTdsInRow = $(this).closest('tr').children('td');
 
     //edit button
@@ -195,18 +191,69 @@ function cancelEdit() {
     currentTdsInRow.eq(3).append(preEditTask.notes)
     currentTdsInRow.eq(6).append(editBtb);
 
-     //disable editing ability
-     $(this).closest('tr').prop('contenteditable', false);
+    
+     
 }
 
 function completeTask(){
+    let moveTaskBtn = `<label class="btn btn-secondary move">
+    <input type="radio" class="notSuccess" autocomplete="off"> Move Task </label>`;
+
     if ($(this).is(':checked') === true ) {
         $(this).parents('tr').addClass('green');
-    }
+        $(this).closest('tr').find('.addTarget').append(moveTaskBtn)
+    } 
+
+
 }
 
 function incompleteTask(){
+    
     if ($(this).is(':checked') === true ) {
         $(this).parents('tr').removeClass('green');
+        $(this).closest('tr').find('.move').remove();
     }
 }
+
+function movingTasks (){
+    console.log('in move task');
+
+    let currentRowData = $(this).closest('tr').data('task')
+
+    $(this).closest('tr').remove();
+    $('#completed').empty();
+    
+    let successTable = 
+    `<h2 class="tableTwoHeader">Completed Tasks</h2>
+    <div class="table-responsive table-hover table-complete">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>When</th>
+            <th>Where</th>
+            <th>Notes</th>
+            <th>Time Complete</th>
+          </tr>
+        </thead>
+        <tbody class="completeTasks">
+        </tbody>
+      </table>
+    </div>`
+    
+    $('#completed').append(successTable);
+
+}
+
+// function postCompleteTasks(task) {
+//     $.ajax({
+//         method: 'PUT',
+//         url: `/tasks/completeTable`,
+//         data: task
+//     }).then(function (response) {
+//         console.log('in postEditedTasks', response);
+//         getTasks();
+//     }).catch(function (error) {
+//         console.log('this is the error', error);
+//     })
+// }
