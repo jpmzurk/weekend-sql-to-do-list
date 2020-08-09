@@ -24,10 +24,10 @@ body {
     background-color:rgb(165, 113, 100, .15);
 }
 header {
-    padding-top: 5em;
-    padding-bottom: 5em;
+    padding-top: 3em;
+    padding-bottom: 3em;
     background-color:rgb(165, 113, 100);
-    text-indent: 4em;
+    text-indent: 3em;
 }
 
 #addTask {
@@ -64,7 +64,10 @@ header {
 .tableBody { 
     padding: 3em;
     padding-top: 0em;
+    padding-bottom: 0em;
 }
+
+
 
 #disabledBtn {
     background-color  : white !important;
